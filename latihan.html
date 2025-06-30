@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Practice - EnglishFun</title>
+    <link rel="manifest" href="./manifest.json">
+</head>
+<body>
+    <header>
+        <h1>Listening practice</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="latihan.html">Listening</a></li>
+                <li><a href="latihan2.html">Quiz</a></li>
+                
+                <li><button id="installButton" class="download-button" style="display: none;">Install EnglishFun</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="listening">
+            <h2>Listening practice</h2>
+            <p>Klik untuk memulai mendengarkan:</p>
+            <a href="https://test-english.com/listening/">Mulai latihan mendengarkan</a>
+        </section>
+    </main>
+
+    <script>
+        let deferredPrompt; // Variabel untuk menyimpan event instalasi browser
+        const installButton = document.getElementById('installButton');
+
+        // Pastikan Service Worker didukung oleh browser
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Perbaikan: Gunakan jalur relatif untuk service-workers.js
+                navigator.serviceWorker.register('./service-workers.js')
+                    .then(registration => {
+                        console.log('Service Worker berhasil didaftarkan dengan scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Pendaftaran Service Worker gagal:', error);
+                    });
+            });
+        }
+
+        // Tangkap event 'beforeinstallprompt' dari browser
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Mencegah prompt instal default browser muncul secara otomatis
+            e.preventDefault();
+            // Simpan event untuk dipicu nanti oleh tombol kustom kita
+            deferredPrompt = e;
+            // Tampilkan tombol 'Install EnglishFun'
+            installButton.style.display = 'block';
+            console.log('Event beforeinstallprompt dipicu di latihan.html.');
+        });
+
+        // Tambahkan event listener untuk tombol instal kustom
+        installButton.addEventListener('click', (e) => {
+            // Sembunyikan tombol setelah diklik
+            installButton.style.display = 'none';
+            // Tampilkan prompt instalasi PWA dari browser
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                // Tangani respons pengguna terhadap prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('Pengguna menerima prompt instalasi A2HS (Add to Home Screen)');
+                    } else {
+                        console.log('Pengguna menolak prompt instalasi A2HS');
+                    }
+                    deferredPrompt = null; // Bersihkan event yang disimpan
+                });
+            }
+        });
+
+        // Tangani event 'appinstalled' jika PWA berhasil diinstal
+        window.addEventListener('appinstalled', (e) => {
+            console.log('EnglishFun PWA berhasil diinstal dari latihan.html!');
+            // Sembunyikan tombol instal jika masih terlihat
+            installButton.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

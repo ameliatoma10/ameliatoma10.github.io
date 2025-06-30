@@ -1,0 +1,37 @@
+{
+  "name": "EnglishFun",
+  "short_name": "EnglishFun",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f4f4f4",
+  "theme_color": "#4a71c5",
+  "description": "Platform pembelajaran bahasa Inggris interaktif.",
+  "icons": [
+    {
+      "src": "./icon.png",  "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "./icon.png",  "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "resources": [
+    {
+      "href": "index.html",
+      "description": "Halaman utama EnglishFun"
+    },
+    {
+      "href": "latihan.html",
+      "description": "Latihan mendengarkan"
+    },
+    {
+      "href": "latihan2.html",
+      "description": "Kuis latihan"
+    },
+    {
+      "href": "style.css",
+      "description": "Gaya untuk halaman"
+    }
+  ]
+}

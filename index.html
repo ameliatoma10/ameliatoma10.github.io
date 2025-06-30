@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>EnglishFun</title>
+    <link rel="manifest" href="./manifest.json">
+</head>
+<body>
+    <header>
+        <h1>EnglishFun!</h1>
+        <nav>
+            <ul>
+                <li><a href="latihan.html">Listening</a></li>
+                <li><a href="latihan2.html">Quiz</a></li>
+  
+                <li><button id="installButton" class="download-button" style="display: none;">Install EnglishFun</button></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="install-banner" id="installBanner">
+    </div>
+
+    <main>
+        <div class="image-container">
+            <img src="images2.jpeg" alt="Contoh gambar belajar bahasa Inggris">
+        </div>
+        <section id="courses">
+            <h2>Kursus Interaktif</h2>
+            <p>Web "EnglishFun" adalah platform pembelajaran interaktif yang dirancang untuk membantu 
+                pengguna belajar bahasa Inggris dengan cara yang menyenangkan dan efektif. 
+                Halaman utama menyambut pengunjung dengan tampilan menarik dan intuitif, 
+                serta menyediakan akses ke berbagai fitur seperti latihan mendengarkan, berbicara, dan kuis.
+                Pengguna dapat menjelajahi kursus interaktif yang terstruktur dalam modul dan unit, 
+                dengan materi pembelajaran yang dirancang untuk meningkatkan keterampilan bahasa Inggris mereka. 
+                Dengan antarmuka yang sederhana dan gambar yang menarik, web ini bertujuan untuk menciptakan pengalaman 
+                belajar yang menyenangkan dan menarik bagi semua penggunanya.</p>
+        </section>    
+    </main>
+
+    <footer>
+        <p>&copy; 2025 EnglishFun. amelia toma.</p>
+    </footer>
+
+    <script>
+        let deferredPrompt; // Variabel untuk menyimpan event instalasi browser
+        const installButton = document.getElementById('installButton');
+
+        // Pastikan Service Worker didukung oleh browser
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Perbaikan: Gunakan jalur relatif untuk service-workers.js
+                navigator.serviceWorker.register('./service-workers.js')
+                    .then(registration => {
+                        console.log('Service Worker berhasil didaftarkan dengan scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Pendaftaran Service Worker gagal:', error);
+                    });
+            });
+        }
+
+        // Tangkap event 'beforeinstallprompt' dari browser
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Mencegah prompt instal default browser muncul secara otomatis
+            e.preventDefault();
+            // Simpan event untuk dipicu nanti oleh tombol kustom kita
+            deferredPrompt = e;
+            // Tampilkan tombol 'Install EnglishFun'
+            installButton.style.display = 'block';
+            console.log('Event beforeinstallprompt dipicu.');
+        });
+
+        // Tambahkan event listener untuk tombol instal kustom
+        installButton.addEventListener('click', (e) => {
+            // Sembunyikan tombol setelah diklik
+            installButton.style.display = 'none';
+            // Tampilkan prompt instalasi PWA dari browser
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                // Tangani respons pengguna terhadap prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('Pengguna menerima prompt instalasi A2HS (Add to Home Screen)');
+                    } else {
+                        console.log('Pengguna menolak prompt instalasi A2HS');
+                    }
+                    deferredPrompt = null; // Bersihkan event yang disimpan
+                });
+            }
+        });
+
+        // Tangani event 'appinstalled' jika PWA berhasil diinstal
+        window.addEventListener('appinstalled', (e) => {
+            console.log('EnglishFun PWA berhasil diinstal!');
+            // Sembunyikan tombol instal jika masih terlihat
+            installButton.style.display = 'none';
+            // Anda bisa tambahkan notifikasi lain di sini
+        });
+    </script>
+</body>
+</html>
